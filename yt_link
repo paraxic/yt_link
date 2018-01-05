@@ -7,8 +7,13 @@ keyword=$(echo $1 | sed 's/ /\+/')
 nums=$2
 curl --silent https://www.youtube.com/results?search_query=$keyword 1> tmp.xml 
 cat tmp.xml | grep href | sed 's/.*<a//' | grep watch | sed 's/.*href=//' | sed -rn 's/(.+)/\1/pg' | cut -f 1 --delimiter=' ' | sed 's/"//g' | cut -f 1 --delimiter='&' > vids
-#cat vids | sed 's/\//https\:\/\/www\.youtube\.com\//'
-cat vids | grep watch\? > nvids #sanitize links to only watchable ones
-./chop nvids $nums "https://www.youtube.com"
+#sanitize links to only watchable ones
+cat vids | grep watch\? > nvids
+#remove youtube url if already grabbed so we don't wind up with
+#shit like https://www.youtube.comhttps://www.youtube.com/watch?v=<some_vid_id>
+cat nvids | sed 's/https\:\/\/www\.youtube\.com//' > vids 
+#print $number of vids
+./chop vids $nums "https://www.youtube.com"
 rm tmp.xml
 rm vids
+rm nvids
