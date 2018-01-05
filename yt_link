@@ -5,7 +5,7 @@ keyword=$1
 
 keyword=$(echo $1 | sed 's/ /\+/')
 nums=$2
-curl --silent https://www.youtube.com/results?search_query=$keyword 1> tmp.xml 
+curl --silent https://www.youtube.com/results?search_query=$keyword 1> ~/tmp.xml 
 cat ~/tmp.xml | grep href | sed 's/.*<a//' | grep watch | sed 's/.*href=//' | sed -rn 's/(.+)/\1/pg' | cut -f 1 --delimiter=' ' | sed 's/"//g' | cut -f 1 --delimiter='&' > ~/vids
 #sanitize links to only watchable ones
 cat ~/vids | grep watch\? > ~/nvids
